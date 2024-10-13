@@ -1,10 +1,10 @@
 # HSA database sharding
 
-<h3>Mono vs Partitioned database</h3>
+<h3>Single vs Partitioned table</h3>
 
 Prerequisites:
 - Table with/without partitions are created
-- Native PostgreSQL partitioning is configured
+- PostgreSQL native partitioning is configured
 - 10M records data is populated on database startup
 
 Select query:
@@ -41,7 +41,7 @@ Partitioned ``books`` table:
 <img src="./images/partitions.png" width="300">
 
 
-<h3>FDW sharded database</h3>
+<h3>FDW sharded table</h3>
 
 Prerequisites:
 - Table with remote shards are created
@@ -82,7 +82,7 @@ Sharded ``books`` table:
 <img src="./images/shards_fdw.png" width="300">
 
 
-<h3>Citus sharded database</h3>
+<h3>Citus sharded table</h3>
 
 Verify cluster setup by running query on master mode:
 ```
@@ -101,6 +101,11 @@ SELECT create_distributed_table('books', 'publisher');
 |---------------------|------------------|
 | Select              | 10               |
 | Insert 3M           | 360000           |
+
+Conclusions:
+
+1. Select query result is worse comparing to FDW sharded table
+2. Inserting data is better comparing to FDW sharded table
 
 Citus master node configuration:
 
