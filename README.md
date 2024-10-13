@@ -37,7 +37,8 @@ Conclusions:
 3. Insertion time without partitions looks better (think more data is needed to reveal 'partitioning' effect)
 
 Partitioned ``books`` table:
-<img src="./images/partitions.png" width="600">
+
+<img src="./images/partitions.png" width="300">
 
 
 <h3>FDW sharded database</h3>
@@ -77,7 +78,8 @@ Conclusions:
 2. Insertion data to shards predictably slower than without shards dur to transferring data through network
 
 Sharded ``books`` table:
-<img src="./images/shards_fdw.png" width="600">
+
+<img src="./images/shards_fdw.png" width="300">
 
 
 <h3>Citus sharded database</h3>
@@ -95,7 +97,7 @@ Create distributed (sharded) table:
 SELECT create_distributed_table('books', 'publisher');
 ```
 
-| Query (edge server) | With shards (ms) |
+| Query (master node) | With shards (ms) |
 |---------------------|------------------|
 | Select              | 10               |
 | Insert 3M           | 360000           |
