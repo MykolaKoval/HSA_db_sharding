@@ -33,8 +33,8 @@ $$;
 Conclusions:
 
 1. Table partitioning dramatically improved select time
-2. Introduced indexes made select query results similar for both cases 
-3. Insertion time without partitions looks better (think more data is needed to reveal 'partitioning' effect)
+2. Introducing indexes made select query results similar for both cases 
+3. Insertion time without partitions looks better (think more data is needed to reveal 'partitioning' effect on data insert)
 
 Partitioned ``books`` table:
 
@@ -75,7 +75,7 @@ $$;
 Conclusions:
 
 1. Sharded table shows much better select time results
-2. Insertion data to shards predictably slower than without shards dur to transferring data through network
+2. Inserting data into shards is predictably slower due to data transfer over the network
 
 Sharded ``books`` table:
 
@@ -84,7 +84,7 @@ Sharded ``books`` table:
 
 <h3>Citus sharded database</h3>
 
-Verify cluster setup running query on master mode:
+Verify cluster setup by running query on master mode:
 ```
 psql -U postgres citus
 
