@@ -1,0 +1,70 @@
+version: '3.9'
+services:
+
+  # Master coordinator, splits the work between workers
+  master:
+    image: citusdata/citus:latest
+    env_file: citus.env
+    ports:
+      - 5432:5432
+    labels: ["com.citusdata.role=Master"]
+    volumes:
+      - master_data:/var/lib/postgresql/data
+      - ./scripts/citus/ddl.sql:/docker-entrypoint-initdb.d/1.sql # Create data model
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    networks:
+      - backend
+
+  # Worker that keeps a part of the tables
+  worker1:
+    image: citusdata/citus:latest
+    env_file: citus.env
+    ports:
+      - 5433:5432
+    labels: [ "com.citusdata.role=Worker" ]
+    depends_on:
+      - manager
+    volumes:
+      - worker1_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  worker2:
+    image: citusdata/citus:latest
+    env_file: citus.env
+    ports:
+      - 5434:5432
+    labels: [ "com.citusdata.role=Worker" ]
+    depends_on:
+      - manager
+    volumes:
+      - worker2_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  # Manages to register or remove work into master coordinator
+  manager:
+    image: citusdata/membership-manager:0.3.0
+    env_file: citus.env
+    volumes:
+      - "${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock"
+      - manager_data:/healthcheck
+    depends_on:
+      master:
+        condition: service_healthy
+    networks:
+      - backend
+
+volumes:
+  master_data:
+  worker1_data:
+  worker2_data:
+  manager_data:
+
+networks:
+  backend:
+    driver: bridge
